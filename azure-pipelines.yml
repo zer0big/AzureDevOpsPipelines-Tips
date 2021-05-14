@@ -7,7 +7,7 @@ pool:
 variables:
   subscription: 'SVCCONN4TF'
   resourceGroup: resourcegroup-tfstate
-  storageAccount: terraformtfstateskip
+  storageAccount: terraformtfstateskip40
   container: tfstate
   tfstateFile: terraform.tfstate
   anyTfChanges: false
