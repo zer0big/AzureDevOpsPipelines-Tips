@@ -71,5 +71,5 @@ steps:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/skip-step'
-    commandOptions: '-auto-approve -out=tfplan'
+    commandOptions: 'tfplan'
     environmentServiceNameAzureRM: '$(subscription)'
