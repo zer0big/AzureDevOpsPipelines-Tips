@@ -7,7 +7,7 @@ variables:
   terraformVersion: 0.14.5
   azureSubscriptionServiceConnectionName: 'SvcConn4TFHandson'
   subscription: 'SvcConn4TFHandson'
-  resourceGroup: 'ud-azdo-terraform-demo-rg'
+  resourceGroup: 'ud-terraform-demo-rg'
   storageAccount: 'udzerotfstate'
   storageAccountSku: 'Standard_LRS'
   container: 'ud-zerotfstatecont'
