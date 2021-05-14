@@ -1,26 +1,30 @@
-# trigger:
-# - master
+trigger:
+ - master
+ 
+variables:
+  vmImageName: 'ubuntu-latest'
+  location: 'Korea Central'
+  terraformVersion: 0.14.5
+  azureSubscriptionServiceConnectionName: 'SvcConn4TFHandson'
+  subscription: 'SvcConn4TFHandson'
+  resourceGroup: 'ud-azdo-terraform-demo-rg'
+  storageAccount: 'udzerotfstate'
+  storageAccountSku: 'Standard_LRS'
+  container: 'ud-zerotfstatecont'
+  tfstateFile: 'tf.tfstate'
+  anyIfChange: false
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: $(vmImageName)
 
-variables:
-  subscription: 'SVCCONN4TF'
-  resourceGroup: resourcegroup-tfstate
-  storageAccount: terraformtfstateskip40
-  container: tfstate
-  tfstateFile: terraform.tfstate
-  anyTfChanges: false
 
 steps:
 
 - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-  displayName: install Terraform v0.14.6
   inputs:
     terraformVersion: '0.14.6'
 
 - task: TerraformTaskV1@0
-  displayName: terraform init
   inputs:
     provider: 'azurerm'
     command: 'init'
@@ -28,17 +32,16 @@ steps:
     backendServiceArm: '$(subscription)'
     backendAzureRmResourceGroupName: '$(resourceGroup)'
     backendAzureRmStorageAccountName: '$(storageAccount)'
-    backendAzureRmContainerName: '$(container)'
-    backendAzureRmKey: '$(tfstateFile)'
+    backendAzureRmContainerName: '$(ud-zerotfstatecont)'
+    backendAzureRmKey: '$(tf.tfstate)'
 
 - task: TerraformTaskV1@0
-  displayName: terraform plan -out=tfplan
   inputs:
+    displayName: terraform plan tfplan
     provider: 'azurerm'
     command: 'plan'
     workingDirectory: '$(System.DefaultWorkingDirectory)/skip-step'
     commandOptions: '-out=tfplan'
-    # commandOptions: '-detailed-exitcode -out=tfplan'
     environmentServiceNameAzureRM: '$(subscription)'
 
 - task: PowerShell@2
@@ -60,13 +63,12 @@ steps:
       {
         Write-Host "There is no change detected in Terraform tfplan file"
       }
-
 - task: TerraformTaskV1@0
   displayName: terraform apply tfplan
-  condition: eq(variables.anyTfChanges, true)
+  condition: eq(variables.anyTfChanges, true)
   inputs:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/skip-step'
-    commandOptions: 'tfplan'
+    commandOptions: '-out=tfplan'
     environmentServiceNameAzureRM: '$(subscription)'
