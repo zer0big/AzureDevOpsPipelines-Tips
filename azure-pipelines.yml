@@ -38,7 +38,6 @@ steps:
 
 - task: TerraformTaskV1@0
   inputs:
-    displayName: terraform plan tfplan
     provider: 'azurerm'
     command: 'plan'
     workingDirectory: '$(System.DefaultWorkingDirectory)/skip-step'
